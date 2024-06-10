@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.emilahmaboy.saturative.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "HungerManagerMixin",
+    "StatusEffectMixin",
+    "PotionItemMixin"
+  ],
+  "client": [
+    "ClientPlayerEntityMixin",
+    "InGameHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
