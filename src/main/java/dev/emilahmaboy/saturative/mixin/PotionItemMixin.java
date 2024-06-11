@@ -16,8 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.item.PotionItem;
 
-@Mixin(targets = "net.minecraft.item.PotionItem")
+@Mixin(PotionItem.class)
 public class PotionItemMixin {
     @Inject(
             method = "finishUsing",

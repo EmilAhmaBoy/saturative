@@ -18,8 +18,10 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.entity.player.HungerManager;
 
-@Mixin(targets = "net.minecraft.entity.player.HungerManager")
+
+@Mixin(HungerManager.class)
 public abstract class HungerManagerMixin {
     @Unique private int foodDigestionTimer = 0;
 

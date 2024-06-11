@@ -1,10 +1,11 @@
 package dev.emilahmaboy.saturative.mixin;
 
-
+import net.minecraft.entity.effect.StatusEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 
-@Mixin(targets = "net.minecraft.entity.effect.StatusEffect")
+
+@Mixin(StatusEffect.class)
 public class StatusEffectMixin {
     @ModifyConstant(
             method = "applyUpdateEffect",

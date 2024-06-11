@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.emilahmaboy.saturative.integrations.farmersdelight.FarmersDelightModEffectsInstance;
 
+import net.minecraft.client.gui.hud.InGameHud;
 
-@Mixin(targets = "net.minecraft.client.gui.hud.InGameHud")
+
+@Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
     @Shadow private int scaledWidth;
 

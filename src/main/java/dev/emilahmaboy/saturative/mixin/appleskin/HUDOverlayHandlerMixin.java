@@ -47,7 +47,7 @@ public abstract class HUDOverlayHandlerMixin {
                     ordinal = 0
             )
     )
-    private float modifyFoodDelta(float ignored) {
+    private float dontDrawExhaustionOverlay(float ignored) {
         return 0.0F;
     }
 }
