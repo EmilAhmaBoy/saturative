@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
@@ -23,8 +24,6 @@ import net.minecraft.entity.player.HungerManager;
 
 @Mixin(HungerManager.class)
 public abstract class HungerManagerMixin {
-    @Unique private int foodDigestionTimer = 0;
-
     @Shadow private int foodLevel = 150;
     // Too low food: <20
     // Low food: <100
@@ -46,7 +45,7 @@ public abstract class HungerManagerMixin {
             at = @At("TAIL")
     )
     public boolean isNotFull(boolean original) {
-        return foodDigestionTimer <= 0;
+        return true;
     }
 
     /**
@@ -59,41 +58,18 @@ public abstract class HungerManagerMixin {
         this.saturationLevel = Math.min(this.saturationLevel + saturationModifier * food * 2.0F, (float) this.foodLevel / 20.0F);
     }
 
-    @Inject(
-            method = "eat",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/HungerManager;add(IF)V",
-                    ordinal = 0,
-                    shift = At.Shift.AFTER
-            )
-    )
-    public void eatDigestionTimer(Item item, ItemStack stack, CallbackInfo ci) {
-        FoodComponent foodComponent = item.getFoodComponent();
-        if (foodComponent != null) {
-            int food = foodComponent.getHunger();
-            foodDigestionTimer += 10 + 5 * food;
-        }
-    }
-
-    @Unique
-    public int getFoodDigestionTimer() {
-        return foodDigestionTimer;
-    }
-
     /**
      * @author EmilAhmaBoy
      * @reason Saturative mod overwrites HungerManager
      */
     @Overwrite
     public void update(PlayerEntity player) {
-        foodDigestionTimer = foodDigestionTimer - 1;
         Difficulty difficulty = player.getWorld().getDifficulty();
         this.prevFoodLevel = this.foodLevel;
         boolean naturalRegenerative = player.getWorld().getGameRules().getBoolean(GameRules.NATURAL_REGENERATION);
 
         if (!player.isCreative()) {
-            if (player.getHealth() < 16.0F) {
+            if (player.getHealth() < player.getMaxHealth()) {
                 this.addExhaustion(0.002F + (this.foodLevel > 300 ? 0.002F : 0.0F));
             }
 
@@ -141,7 +117,7 @@ public abstract class HungerManagerMixin {
                     this.addExhaustion(f / 2.0F);
                     this.foodTickTimer = 0;
                 }
-            } else if (naturalRegenerative && this.saturationLevel <= 0.0F && player.canFoodHeal() && this.foodLevel >= 100 && this.foodLevel < 400 && player.getHealth() <= 16.0F) {
+            } else if (naturalRegenerative && this.saturationLevel <= 0.0F && player.canFoodHeal() && this.foodLevel >= 100 && this.foodLevel < 400 && player.getHealth() <= player.getMaxHealth() / 1.15) {
                 ++this.foodTickTimer;
                 if (this.foodTickTimer >= 3) {
                     this.foodLevel -= 10;

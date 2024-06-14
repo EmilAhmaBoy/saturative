@@ -1,18 +1,10 @@
 package dev.emilahmaboy.saturative.mixin.appleskin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import dev.emilahmaboy.saturative.mixin.InGameHudMixin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.item.Items;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Slice;
-import squeek.appleskin.helpers.TextureHelper;
-import squeek.appleskin.util.IntPoint;
-
-import java.util.Vector;
+import org.spongepowered.asm.mixin.injection.*;
 
 
 @Pseudo
@@ -49,5 +41,14 @@ public abstract class HUDOverlayHandlerMixin {
     )
     private float dontDrawExhaustionOverlay(float ignored) {
         return 0.0F;
+    }
+
+    /**
+     * @author EmilAhmaBoy
+     * @reason It doesn't work very well with Saturative mod, so it temporarily removed
+     */
+    @Overwrite
+    public void drawHungerOverlay(DrawContext context, int hungerRestored, int foodLevel, MinecraftClient mc, int right, int top, float alpha, boolean useRottenTextures) {
+
     }
 }

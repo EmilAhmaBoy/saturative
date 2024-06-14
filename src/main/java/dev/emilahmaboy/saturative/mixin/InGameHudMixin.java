@@ -123,7 +123,7 @@ public abstract class InGameHudMixin {
                 float nearestFoodSegment = foodSegment * ((float) (count - i - 1));
                 if (nearestFoodSegment < foodLevel) {
                     float brilliance = foodLevel - nearestFoodSegment;
-                    context.setShaderColor(0.4F, 0.7F, 0.6F, 0.75F);
+                    context.setShaderColor(0.45F, 0.83F, 0.69F, 0.75F);
                     context.drawTexture(icons, x, y, _uFull, _vFull, (int) Math.min(9.0F, (brilliance / foodSegment) * 9.0F), 9);
                 }
                 context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
