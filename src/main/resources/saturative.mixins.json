@@ -11,8 +11,7 @@
   ],
   "client": [
     "ClientPlayerEntityMixin",
-    "InGameHudMixin",
-    "LivingEntityRendererMixin"
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -25,7 +25,12 @@ public class NourishmentEffectMixin extends StatusEffect {
      * @reason Saturative mod needs for some changes in NourishmentEffect
      */
     @Overwrite
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public
+    //? if <1.20.6 {
+    void
+    //?} else
+    /*boolean*/
+    applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (!entity.getEntityWorld().isClient && entity instanceof PlayerEntity player) {
             HungerManager foodData = player.getHungerManager();
             boolean isSaturating = true;
@@ -45,9 +50,12 @@ public class NourishmentEffectMixin extends StatusEffect {
             if (isSaturating) {
                 if (foodData.getExhaustion() >= 0.3F - 0.1F * (float) amplifier) {
                     player.addExhaustion(-0.3F - 0.1F * (float) amplifier);
-                    System.out.println(-0.3F - 0.1F * (float) amplifier);
                 }
             }
         }
+        //? if >=1.20.6
+        /*
+        return true;
+        */
     }
 }

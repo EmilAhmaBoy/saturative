@@ -5,5 +5,21 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         gradlePluginPortal()
+        maven {
+            url = "https://maven.kikugie.dev/releases"
+        }
     }
+}
+
+plugins {
+    id "dev.kikugie.stonecutter" version "0.4"
+}
+
+stonecutter {
+    shared {
+        versions "1.20.1", "1.20.4", "1.20.6", "1.21"
+        vcsVersion = "1.20.4"
+    }
+
+    create rootProject
 }

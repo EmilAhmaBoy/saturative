@@ -6,7 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "appleskin.HUDOverlayHandlerMixin"
+    "appleskin.HUDOverlayHandlerMixin",
+    "appleskin.HUDOverlayHandlerMixinOffsetsCache"
   ],
   "injectors": {
     "defaultRequire": 1

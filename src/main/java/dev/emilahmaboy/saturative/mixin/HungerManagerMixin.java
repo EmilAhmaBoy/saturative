@@ -1,24 +1,15 @@
 package dev.emilahmaboy.saturative.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.block.IceBlock;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.player.HungerManager;
 
 
@@ -52,11 +43,21 @@ public abstract class HungerManagerMixin {
      * @author EmilAhmaBoy
      * @reason Saturative mod overwrites HungerManager
      */
+    //? if <1.20.6 {
     @Overwrite
     public void add(int food, float saturationModifier) {
         this.foodLevel = Math.min(this.foodLevel + food * 4 + (int) (saturationModifier * (float) food) * 2, 400);
         this.saturationLevel = Math.min(this.saturationLevel + saturationModifier * food * 2.0F, (float) this.foodLevel / 20.0F);
     }
+    //?} else
+    /*
+    @Overwrite
+    private void addInternal(int nutrition, float saturation) {
+        this.foodLevel = Math.min(this.foodLevel + nutrition * 4 + (int) saturation, 400);
+        this.saturationLevel = Math.min(this.saturationLevel + saturation, (float) this.foodLevel / 20.0F);
+        System.out.println(nutrition + " " + saturation);
+    }
+    */
 
     /**
      * @author EmilAhmaBoy

@@ -1,8 +1,6 @@
 package dev.emilahmaboy.saturative.mixin.appleskin;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.Items;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 
@@ -10,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.*;
 @Pseudo
 @Mixin(targets = "squeek.appleskin.client.HUDOverlayHandler")
 public abstract class HUDOverlayHandlerMixin {
+    //? if <1.20.6 {
     @ModifyConstant(
             method = "generateBarOffsets",
             constant = @Constant(
@@ -20,7 +19,6 @@ public abstract class HUDOverlayHandlerMixin {
     private int modifyFoodCount(int ignored) {
         return 12;
     }
-
     @ModifyConstant(
             method = "generateBarOffsets",
             constant = @Constant(
@@ -31,6 +29,7 @@ public abstract class HUDOverlayHandlerMixin {
     private int modifyFoodDelta(int ignored) {
         return 7;
     }
+    //?}
 
     @ModifyConstant(
             method = "drawExhaustionOverlay*",
@@ -43,12 +42,11 @@ public abstract class HUDOverlayHandlerMixin {
         return 0.0F;
     }
 
-    /**
-     * @author EmilAhmaBoy
-     * @reason It doesn't work very well with Saturative mod, so it temporarily removed
-     */
-    @Overwrite
-    public void drawHungerOverlay(DrawContext context, int hungerRestored, int foodLevel, MinecraftClient mc, int right, int top, float alpha, boolean useRottenTextures) {
-
+    @ModifyExpressionValue(
+            method = "drawHungerOverlay(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/MinecraftClient;IIFZ)V",
+            at = @At(value = "INVOKE", target = "Ljava/lang/Math;ceil(D)D", ordinal = 0)
+    )
+    private double dontDrawHungerOverlay(double original) {
+        return 0;
     }
 }
