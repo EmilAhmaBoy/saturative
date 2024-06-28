@@ -46,15 +46,15 @@ public abstract class HungerManagerMixin {
     //? if <1.20.6 {
     @Overwrite
     public void add(int food, float saturationModifier) {
-        this.foodLevel = Math.min(this.foodLevel + food * 4 + (int) (saturationModifier * (float) food) * 2, 400);
-        this.saturationLevel = Math.min(this.saturationLevel + saturationModifier * food * 2.0F, (float) this.foodLevel / 20.0F);
+        this.foodLevel = Math.min(this.foodLevel + food * 5, 400);
+        this.saturationLevel = Math.min(this.saturationLevel + saturationModifier * food * 2.0F, (float) this.foodLevel / 18.0F);
     }
     //?} else
     /*
     @Overwrite
     private void addInternal(int nutrition, float saturation) {
-        this.foodLevel = Math.min(this.foodLevel + nutrition * 4 + (int) saturation, 400);
-        this.saturationLevel = Math.min(this.saturationLevel + saturation, (float) this.foodLevel / 20.0F);
+        this.foodLevel = Math.min(this.foodLevel + nutrition * 5, 400);
+        this.saturationLevel = Math.min(this.saturationLevel + saturation, (float) this.foodLevel / 18.0F);
         System.out.println(nutrition + " " + saturation);
     }
     */
