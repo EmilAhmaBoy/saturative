@@ -3,6 +3,7 @@ package dev.emilahmaboy.saturative.mixin.appleskin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import dev.emilahmaboy.saturative.api.HungerManagerValues;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.HungerManager;
@@ -21,6 +22,8 @@ import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.DataComponentTypes;
 */
 
+import static dev.emilahmaboy.saturative.api.HungerManagerValues.*;
+
 
 @Pseudo
 @Mixin(targets = "squeek.appleskin.client.HUDOverlayHandler")
@@ -34,7 +37,7 @@ public abstract class HUDOverlayHandlerMixin {
             )
     )
     private int modifyFoodCount(int ignored) {
-        return 12;
+        return foodBarSize;
     }
     @ModifyConstant(
             method = "generateBarOffsets",
@@ -44,7 +47,7 @@ public abstract class HUDOverlayHandlerMixin {
             )
     )
     private int modifyFoodDelta(int ignored) {
-        return 7;
+        return foodBarDelta;
     }
     @Inject(
             method = "generateBarOffsets",
@@ -65,9 +68,10 @@ public abstract class HUDOverlayHandlerMixin {
     private void modifyShouldAnimatedFood(int top, int left, int right, int ticks, PlayerEntity player, CallbackInfo ci, @Local(ordinal = 1) LocalBooleanRef shouldAnimatedFood) {
         HungerManager hungerManager = player.getHungerManager();
         int foodLevel = hungerManager.getFoodLevel();
-        if (foodLevel < 20 || foodLevel >= 300) {
-            shouldAnimatedFood.set(true);
-        } else if (hungerManager.getSaturationLevel() <= 0.0F && ticks % foodLevel == 0) {
+        float saturationLevel = hungerManager.getSaturationLevel();
+
+        boolean isFoodBarShouldBeAnimated = HungerManagerValues.of(foodLevel, saturationLevel).isFoodBarShouldBeAnimated(ticks);
+        if (isFoodBarShouldBeAnimated) {
             shouldAnimatedFood.set(true);
         }
     }
@@ -103,10 +107,10 @@ public abstract class HUDOverlayHandlerMixin {
             int modifiedFoodValue = foodComponent != null ? foodComponent.nutrition() : 0;
             */
 
-            int modifiedFood = modifiedFoodValue * 5;
-            int newFoodLevel = Math.min(foodLevel + modifiedFood, 400);
+            int modifiedFood = modifiedFoodValue * nutritionModifier;
+            int newFoodLevel = Math.min(foodLevel + modifiedFood, maxFoodLevel);
 
-            return Math.min(original, (float) newFoodLevel / 18.0F);
+            return HungerManagerValues.of(newFoodLevel, original).trimSaturationLevel().getSaturationLevel();
         }
         return original;
     }

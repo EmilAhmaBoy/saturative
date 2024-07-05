@@ -1,5 +1,6 @@
 package dev.emilahmaboy.saturative.mixin;
 
+import dev.emilahmaboy.saturative.api.HungerManagerValues;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
@@ -15,6 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.emilahmaboy.saturative.integrations.farmersdelight.FarmersDelightModEffectsInstance;
 
 import net.minecraft.client.gui.hud.InGameHud;
+
+import static dev.emilahmaboy.saturative.api.HungerManagerValues.foodBarDelta;
+import static dev.emilahmaboy.saturative.api.HungerManagerValues.foodBarSize;
 
 
 @Mixin(InGameHud.class)
@@ -152,23 +156,19 @@ public abstract class InGameHudMixin {
             isUV = true;
         }
 
-        int count = 12;  // Count of food icons
-        int delta = 7;  // Distance between food icons
         int rightEdge = right - 9;
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < foodBarSize; i++) {
             int _uFull = uFull;
             int _uEmpty = uEmpty;
             int _vFull = vFull;
             int _vEmpty = vEmpty;
 
             int y = top;
-            if (foodLevel < 20 || foodLevel >= 300) {
-                y += this.random.nextInt(3) - 1;
-            } else if (hungerManager.getSaturationLevel() <= 0.0F && this.ticks % foodLevel == 0) {
+            if (HungerManagerValues.of((int) foodLevel, hungerManager.getSaturationLevel()).isFoodBarShouldBeAnimated(ticks)) {
                 y += this.random.nextInt(3) - 1;
             }
-            int x = rightEdge - delta * i;
+            int x = rightEdge - foodBarDelta * i;
             // Hunger
             if (player.hasStatusEffect(StatusEffects.HUNGER)) {
                 //? if <1.20.4 {
@@ -193,8 +193,8 @@ public abstract class InGameHudMixin {
             this.drawFoodIcon(context, iconsEmpty, x, y, _uEmpty, _vEmpty, 9, 9, 1.0F, 1.0F, 1.0F, 1.0F, isUV);
 
             if (foodLevel < 100) {
-                float foodSegment = 100.0F / (float) count;
-                float nearestFoodSegment = foodSegment * ((float) (count - i - 1));
+                float foodSegment = 100.0F / (float) foodBarSize;
+                float nearestFoodSegment = foodSegment * ((float) (foodBarSize - i - 1));
                 if (nearestFoodSegment < foodLevel) {
                     float brilliance = foodLevel - nearestFoodSegment;
                     this.drawFoodIcon(context, iconsFull, x, y, _uFull, _vFull, (int) Math.min(9.0F, (brilliance / foodSegment) * 9.0F), 9, 0.45F, 0.83F, 0.69F, 0.75F, isUV);
@@ -202,8 +202,8 @@ public abstract class InGameHudMixin {
             } else if (foodLevel < 300) {
                 this.drawFoodIcon(context, iconsFull, x, y, _uFull, _vFull, 9, 9, 0.4F, 0.7F, 0.6F, 0.75F, isUV);
 
-                float foodSegment = 200.0F / (float) count;
-                float nearestFoodSegment = 100.0f + foodSegment * ((float) (count - i - 1));
+                float foodSegment = 200.0F / (float) foodBarSize;
+                float nearestFoodSegment = 100.0f + foodSegment * ((float) (foodBarSize - i - 1));
                 if (nearestFoodSegment < foodLevel) {
                     float brilliance = foodLevel - nearestFoodSegment;
                     this.drawFoodIcon(context, iconsFull, x, y, _uFull, _vFull, (int) Math.min(9.0F, (brilliance / foodSegment) * 9.0F), 9, 1.0F, 1.0F, 1.0F, 1.0F, isUV);
@@ -211,8 +211,8 @@ public abstract class InGameHudMixin {
             } else if (foodLevel < 350) {
                 this.drawFoodIcon(context, iconsFull, x, y, _uFull, _vFull, 9, 9, 1.0F, 1.0F, 1.0F, 1.0F, isUV);
 
-                float foodSegment = 50.0F / (float) count;
-                float nearestFoodSegment = 300.0f + foodSegment * ((float) (count - i - 1));
+                float foodSegment = 50.0F / (float) foodBarSize;
+                float nearestFoodSegment = 300.0f + foodSegment * ((float) (foodBarSize - i - 1));
                 if (nearestFoodSegment < foodLevel) {
                     float brilliance = foodLevel - nearestFoodSegment;
                     this.drawFoodIcon(context, iconsFull, x, y, _uFull, _vFull, (int) Math.min(9.0F, (brilliance / foodSegment) * 9.0F), 9, 1.0F, 0.7F, 0.3F, 1.0F, isUV);

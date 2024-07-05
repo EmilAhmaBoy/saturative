@@ -12,6 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.entity.player.HungerManager;
+import dev.emilahmaboy.saturative.api.HungerManagerValues;
+
+import static dev.emilahmaboy.saturative.api.HungerManagerValues.foodBarDelta;
+import static dev.emilahmaboy.saturative.api.HungerManagerValues.foodBarSize;
 
 
 @Pseudo
@@ -27,7 +31,7 @@ public class HUDOverlayHandlerMixinOffsetsCache {
             )
     )
     private int modifyFoodCount(int ignored) {
-        return 12;
+        return foodBarSize;
     }
 
     @ModifyConstant(
@@ -38,7 +42,7 @@ public class HUDOverlayHandlerMixinOffsetsCache {
             )
     )
     private int modifyFoodDelta(int ignored) {
-        return 7;
+        return foodBarDelta;
     }
 
     @Inject(
@@ -60,9 +64,10 @@ public class HUDOverlayHandlerMixinOffsetsCache {
     private void modifyShouldAnimatedFood(int guiTicks, PlayerEntity player, CallbackInfo ci, @Local(ordinal = 1) LocalBooleanRef shouldAnimatedFood) {
         HungerManager hungerManager = player.getHungerManager();
         int foodLevel = hungerManager.getFoodLevel();
-        if (foodLevel < 20 || foodLevel >= 300) {
-            shouldAnimatedFood.set(true);
-        } else if (hungerManager.getSaturationLevel() <= 0.0F && guiTicks % foodLevel == 0) {
+        float saturationLevel = hungerManager.getSaturationLevel();
+
+        boolean isFoodBarShouldBeAnimated = HungerManagerValues.of(foodLevel, saturationLevel).isFoodBarShouldBeAnimated(guiTicks);
+        if (isFoodBarShouldBeAnimated) {
             shouldAnimatedFood.set(true);
         }
     }
